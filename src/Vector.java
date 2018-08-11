@@ -7,8 +7,10 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.*;
 
 public class Vector {
+
     private int dimension;
     private double[] array;
 
@@ -30,8 +32,16 @@ public class Vector {
         return dimension;
     }
 
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
+    }
+
     public double[] getArray() {
         return array;
+    }
+
+    public void setArray(double[] array) {
+        this.array = array;
     }
 
     public Vector scale(double scalar) {
@@ -55,40 +65,40 @@ public class Vector {
                 this.array[i] += addend.getArray()[i];
 
             return this;
-        }
-        else
+        } else
             return null;
 
     }
+
     public static void transform(List<Vector> vectors, int dimension) {
 
         double[][] temp = new double[dimension][vectors.size()];
 
         for (int i = 0; i < vectors.size(); i++)
             for (int j = 0; j < vectors.get(i).getArray().length; j++)
-                   temp[j][i]= vectors.get(i).getArray()[j];
+                temp[j][i] = vectors.get(i).getArray()[j];
 
         vectors.clear();
         //System.out.println("T; Temp size: " +temp.length);
-        for(int i = 0; i < temp.length; i++) {
+        for (int i = 0; i < temp.length; i++) {
             vectors.add(new Vector(dimension, temp[i]));
         }
 
     }
+
     public static List<Vector> combine(List<Vector> vector, Vector constants, int dimension) {
         List<Vector> vectors = new ArrayList<>();
-        transform(vector,dimension);
-        for(int i = 0; i < vector.size(); i++) {
-            double[] array = new double[vector.get(i).getArray().length+1];
-            for(int j = 0; j <= vector.get(i).getArray().length; j++ ) {
-                if(j == vector.get(i).getArray().length) {
+        transform(vector, dimension);
+        for (int i = 0; i < vector.size(); i++) {
+            double[] array = new double[vector.get(i).getArray().length + 1];
+            for (int j = 0; j <= vector.get(i).getArray().length; j++) {
+                if (j == vector.get(i).getArray().length) {
                     array[j] = constants.getArray()[i];
-                }
-                else {
+                } else {
                     array[j] = vector.get(i).getArray()[j];
                 }
             }
-            vectors.add(new Vector(dimension+1, array));
+            vectors.add(new Vector(dimension + 1, array));
         }
         return vectors;
     }
@@ -119,6 +129,18 @@ public class Vector {
 
     }
 
+    public static void Arrange(List<Vector> vectors, int j) {
+        int size = vectors.size();
+            for (int k = j; k < size - 1; k++)
+                if( vectors.get(k).getArray()[j] < vectors.get(k+1).getArray()[j]) {
+                    double[] temp = vectors.get(k+1).getArray();
+                    vectors.get(k+1).setArray(vectors.get(k).getArray());
+                    vectors.get(k).setArray(temp);
+                }
+    }
+
+
+
     public static Vector Gauss_Jordan(List<Vector> vectors, int dimension, Vector constants) {
 
       if(vectors.size() == constants.getDimension()) {
@@ -126,22 +148,19 @@ public class Vector {
             int ctr, flag = 0;
             double scalar = 0;
             for (int i = 0; i < vecList.size(); i++) {
-                if (vecList.get(i).getArray()[i] == 0) {
-                    ctr = 1;
-                    while ((((i + ctr) < vecList.size()) && vecList.get(i + ctr).getArray()[i] == 0))
-                        ctr++;
-                    if ((i + ctr) == vecList.size()) {
-                        flag = 1;
-                        break;
-                    }
+              Arrange(vecList, i);
+              print_matrix(vecList);
+              if (vecList.get(i).getArray()[i] == 0) {
+                  ctr = 1;
+                  while ((((i + ctr) < vecList.size()) && vecList.get(i + ctr).getArray()[i] == 0))
+                      ctr++;
+                  if ((i + ctr) == vecList.size()) {
+                      flag = 1;
+                      break;
+                  }
+              }
 
-                    for (int j = 0, k = 0; k <= vecList.size(); k++) {
 
-                        double temp = vecList.get(j).getArray()[k];
-                        vecList.get(j).getArray()[k] = vecList.get(j + ctr).getArray()[k];
-                        vecList.get(j + ctr).getArray()[k] = temp;
-                    }
-                }
                 for (int j = 0; j < vecList.size(); j++) {
                     if (i != j) {
                         double x = vecList.get(j).getArray()[i];
@@ -154,9 +173,10 @@ public class Vector {
                         }
                     }
                 }
+                print_matrix(vecList);
             }
 
-           // print_matrix(vecList);
+            print_matrix(vecList);
             Vector v = new Vector(dimension);
 
             if (flag == 1)
@@ -215,7 +235,7 @@ public class Vector {
         test 4 :([[0, 0], [0, 0]], 2, [1, 1]), expected answer is null - correct
         test 5 :([[1, 0, 0], [0, 1, 0], [0, 0, 1]], 3, [1, 1, 1]), expected answer is [1, 1, 1] - correct
         test 6 :[[1, 2, 3], [3, 4, 6], [1, 0, 1]], 3, [5, 6, 10]), expected answer is [1, 1, 1] - correct
-        test 7 :([[1, 2, 4], [1, 2, 6], [0, 2, 3]], 3, [2, 6, 13]), expected answer is [1, 1, 1] - wrong 1.0000000000000002 2.0 0.3333333333333333
+        test 7 :([[1, 2, 4], [1, 2, 6], [0, 2, 3]], 3, [2, 6, 13]), expected answer is [1, 1, 1] - correct
         test 8 :([[1, 2, 2, 3], [2, 4, 4, 2], [5, 8, 10, 7], [7, 16, 14, 2]], 4, [0, 0, 0, 0]), expected answer is null - correct
         test 9 :([[1, 0, 0, 0, 0], [0, 1, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 1, 0], [0, 0, 0, 0, 1]], 5, [1, 1, 1, 1, 1]), expected answer is [1, 1, 1, 1, 1] - correct
         test 10:([[1,2,3,4,5,6],[10,0,0,0,0,10],[10,0,0,0,0,10],[10,0,0,0,0,10],[10,0,0,0,0,10],[1,2,3,4,5,6]], 6, [0,0,0,0,0,0]), expected answer is null - correct
@@ -225,33 +245,33 @@ public class Vector {
         test 14:([[1,2,2,2,2,2],[2,1,2,2,2,2],[2,2,1,2,2,2]], 6, [0,0,0,0,0,0]), expected answer is null - correct
         test 15:([[2,1], 2, [2,3]), expected answer is null - correct
      */
-        int dimension = 3;
+        int dimension = 4;
 
-        double[] arr1 = {1, 2, 4};
-        double[] arr2 = {1, 2, 6};
-        double[] arr3 = {0, 2, 3};
-        /*double[] arr4 = {0,2};
-        double[] arr5 = {10,0,0,0,0,10};
+        double[] arr1 = {1, 2, 2, 3};
+        double[] arr2 = {2, 4, 5, 2};
+        double[] arr3 = {5, 8, 10, 7};
+        double[] arr4 = {7, 16, 14, 2};
+        /*double[] arr5 = {10,0,0,0,0,10};
         double[] arr6 = {1,2,3,4,5,6};*/
 
 
         Vector vector1 = new Vector(dimension, arr1);
         Vector vector2 = new Vector(dimension, arr2);
         Vector vector3 = new Vector(dimension, arr3);
-       /*
+
         Vector vector4 = new Vector(dimension, arr4);
-        Vector vector5 = new Vector(dimension, arr5);
+        /*Vector vector5 = new Vector(dimension, arr5);
         Vector vector6 = new Vector(dimension, arr6);*/
 
         vecList.add(vector1);
         vecList.add(vector2);
         vecList.add(vector3);
-        /*
+
         vecList.add(vector4);
-        vecList.add(vector5);
-        vecList.add(vector6);*//*
-*/
-        double[] cons = {2, 6, 13};
+        /*vecList.add(vector5);
+        vecList.add(vector6);
+        */
+        double[] cons = {14, 30, 31, 14};
         Vector constants = new Vector(dimension, cons);
         Vector v = Gauss_Jordan(vecList, dimension, constants);
 
