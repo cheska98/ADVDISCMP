@@ -129,38 +129,43 @@ public class Matrix {
     }
 
     public Matrix inverse() {
-        Matrix matrix = new Matrix(this.getDimension());
-        List<Vector> vecList = combine(this);
-        double scalar = 0;
-        for (int i = 0; i < vecList.size(); i++) {
-            Vector.Arrange(vecList, i);
-              for (int j = 0; j < this.getDimension(); j++) {
-                if (i != j) {
-                    double x = vecList.get(j).getArray()[i];
-                    double y = vecList.get(i).getArray()[i];
 
-                    if (x != 0 && y != 0) {
-                        scalar = -1 * (x / y);
-                        vecList.get(j).add(vecList.get(i).scale(scalar));
-                        vecList.get(i).unscale(scalar);
+        if(this.getDimension() == this.getRow()) {
+            Matrix matrix = new Matrix(this.getDimension());
+            List<Vector> vecList = combine(this);
+            double scalar = 0;
+            for (int i = 0; i < vecList.size(); i++) {
+                Vector.Arrange(vecList, i);
+                for (int j = 0; j < this.getDimension(); j++) {
+                    if (i != j) {
+                        double x = vecList.get(j).getArray()[i];
+                        double y = vecList.get(i).getArray()[i];
+
+                        if (x != 0 && y != 0) {
+                            scalar = -1 * (x / y);
+                            vecList.get(j).add(vecList.get(i).scale(scalar));
+                            vecList.get(i).unscale(scalar);
+                        }
                     }
                 }
+
+                for(int j = 0; j < matrix.getDimension(); j++)
+                    if(vecList.get(j).getArray()[j] != 1)
+                        if(vecList.get(j).getArray()[j] == 0)
+                            return null;
+                        else
+                            vecList.get(j).divide(vecList.get(j).getArray()[j]);
+
             }
+            List<Vector> vec = extract(vecList, matrix.getDimension());
+            matrix.setVectors(vec);
+            matrix.setDimension(vec.get(0).getArray().length);
+            matrix.setRow(vec.size());
 
-            for(int j = 0; j < matrix.getDimension(); j++)
-                if(vecList.get(j).getArray()[j] != 1)
-                    if(vecList.get(j).getArray()[j] == 0)
-                        return null;
-                    else
-                        vecList.get(j).divide(vecList.get(j).getArray()[j]);
-
+            return matrix;
         }
-        List<Vector> vec = extract(vecList, matrix.getDimension());
-        matrix.setVectors(vec);
-        matrix.setDimension(vec.get(0).getArray().length);
-        matrix.setRow(vec.size());
-
-     return matrix;
+       else
+           return null;
     }
     public static void main(String[] args) {
 
