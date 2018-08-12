@@ -114,15 +114,16 @@ public class Vector {
 
     static int IsSolution(List<Vector> vectors, int flag) {
 
+        int j;
         flag = 3;
 
         for (int i = 0; i < vectors.size(); i++) {
             double sum = 0;
-            for (int j = 0; j < vectors.get(i).getArray().length; j++) {
+            for (j = 0; j < vectors.get(i).getArray().length; j++) {
                 sum += vectors.get(i).getArray()[j];
-                if (sum == vectors.get(i).getArray()[j])
-                    flag = 2;
             }
+            if (sum == vectors.get(i).getArray()[j])
+                flag = 2;
         }
 
         return flag;
@@ -159,7 +160,6 @@ public class Vector {
                       break;
                   }
               }
-
 
                 for (int j = 0; j < vecList.size(); j++) {
                     if (i != j) {

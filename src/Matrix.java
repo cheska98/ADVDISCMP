@@ -4,7 +4,7 @@ import java.util.List;
 public class Matrix {
 
     private int dimension;
-    private double[][] array;
+    private List<Vector> vectors;
     private int row;
 
     public Matrix(){}
@@ -13,24 +13,20 @@ public class Matrix {
 
         this.dimension = dimension;
         this.row = dimension;
-        this.array = new double[dimension][dimension];
+        this.vectors = new ArrayList<>();
 
         for(int i = 0; i < dimension; i++) {
-            for(int j = 0; j < dimension; j++) {
-                if(i == j) {
-                    array[i][j] = 1;
-                } else
-                    array[i][j] = 0;
-            }
+            Vector v = new Vector(dimension);
+            v.getArray()[i] = 1.0;
+            vectors.add(v);
         }
     }
 
     public Matrix(List<Vector> list, int dimension) {
-        this.array = transform(list, dimension);
-        this.dimension = array[0].length;
-        this.row = array.length;
+        this.vectors = transform(list, dimension);
+        this.dimension = vectors.get(0).getArray().length;
+        this.row = vectors.size();
     }
-
 
     public int getDimension() {
         return dimension;
@@ -40,12 +36,12 @@ public class Matrix {
         this.dimension = dimension;
     }
 
-    public double[][] getArray() {
-        return array;
+    public List<Vector> getVectors() {
+        return vectors;
     }
 
-    public void setArray(double[][] array) {
-        this.array = array;
+    public void setVectors(List<Vector> vectors) {
+        this.vectors = vectors;
     }
 
     public int getRow() {
@@ -59,6 +55,7 @@ public class Matrix {
     public Matrix times(Matrix b) {
 
         Matrix result = new Matrix();
+        List<Vector> n = new ArrayList<>();
 
         if(this.getDimension() != b.getRow()){
             return null;
@@ -68,38 +65,50 @@ public class Matrix {
             for(int i = 0; i < this.getRow(); i++)
                 for(int j = 0; j < b.getDimension(); j++)
                     for(int k = 0; k < this.getDimension(); k++)
-                        product[i][j] += this.getArray()[i][k] * b.getArray()[k][j];
+                        product[i][j] += this.getVectors().get(i).getArray()[k] * b.getVectors().get(k).getArray()[j];
 
-            result.setArray(product);
-            result.setDimension(b.getDimension());
+            for (int i = 0; i < product.length; i++) {
+                n.add(new Vector(b.getDimension(), product[i]));
+            }
+
+            result.setVectors(n);
             result.setRow(this.getRow());
+            result.setDimension(b.getDimension());
         }
 
         return result;
     }
 
-    public static double[][] transform(List<Vector> list, int dimension) {
+    public static List<Vector> transform(List<Vector> vectors, int dimension) {
 
-        double[][] temp = new double[dimension][list.size()];
-        for (int i = 0; i < list.size(); i++)
-            for (int j = 0; j < list.get(i).getArray().length; j++)
-                temp[j][i]= list.get(i).getArray()[j];
+        double[][] temp = new double[dimension][vectors.size()];
 
-        return temp;
+        for (int i = 0; i < vectors.size(); i++)
+            for (int j = 0; j < vectors.get(i).getArray().length; j++)
+                temp[j][i] = vectors.get(i).getArray()[j];
+
+        vectors.clear();
+        //System.out.println("T; Temp size: " +temp.length);
+        for (int i = 0; i < temp.length; i++) {
+            vectors.add(new Vector(dimension, temp[i]));
+        }
+
+        return vectors;
+
     }
-
+    
     public static void main(String[] args) {
 
-//        Matrix m = new Matrix(3);
-//
-//        double[][] x = m.getArray();
-//        for(int i = 0; i < m.getDimension(); i++) {
-//            for(int j = 0; j < m.getDimension(); j++) {
-//                System.out.print(x[i][j] + " ");
-//            }
-//
-//            System.out.println();
-//        }
+        Matrix h = new Matrix(3);
+
+        List<Vector> a = h.getVectors();
+        for(int i = 0; i < h.getDimension(); i++) {
+            for(int j = 0; j < h.getDimension(); j++) {
+                System.out.print(a.get(i).getArray()[j] + " ");
+            }
+
+            System.out.println();
+        }
 
         List<Vector> vecList = new ArrayList<>();
         int dimension = 2;
@@ -120,11 +129,11 @@ public class Matrix {
         //vecList.add(vector4);
 
         Matrix n = new Matrix(vecList, dimension);
-        double[][] y = n.getArray();
+        List<Vector> y = n.getVectors();
 
         for(int i = 0; i < n.getRow();i++) {
             for(int j = 0; j < n.getDimension(); j++) {
-                System.out.print(y[i][j] + " ");
+                System.out.print(y.get(i).getArray()[j] + " ");
             }
 
             System.out.println();
@@ -149,11 +158,11 @@ public class Matrix {
         //vecList.add(vector4);
 
         Matrix m = new Matrix(list, dim);
-        double[][] z = m.getArray();
+        List<Vector> z = m.getVectors();
 
         for(int i = 0; i < m.getRow();i++) {
             for(int j = 0; j < m.getDimension(); j++) {
-                System.out.print(z[i][j] + " ");
+                System.out.print(z.get(i).getArray()[j] + " ");
             }
 
             System.out.println();
@@ -163,7 +172,7 @@ public class Matrix {
 
         for(int i = 0; i < x.getRow(); i++) {
             for(int j = 0; j < x.getDimension();j++) {
-                System.out.print(x.getArray()[i][j] + " ");
+                System.out.print(x.getVectors().get(i).getArray()[j] + " ");
             }
 
             System.out.println();
