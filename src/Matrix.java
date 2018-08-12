@@ -127,7 +127,53 @@ public class Matrix {
         }
         return list;
     }
+	
+	public double det(){
+		double z = 1;
+		 if(this.getDimension() == this.getRow()) {
+            Matrix matrix = new Matrix(this.getDimension());
+            List<Vector> vecList = combine(this);
+            double scalar = 0;
+			for(int i = 0; i<vecList.size(); i++){
+				Vector.Arrange(vecList, i);
+				for(int j = i; j<vecList.size(); j++){
+					//for(int k = 0; k<vecList.size(); k++){
+					//	
+					//	for(int l = 0; l<vecList.size(); l++){
+					//		System.out.print(vecList.get(k).getArray()[l]+" ");
+					//	}
+					//	System.out.println();
+					//}
+					//System.out.println();
+					
+					if(i != j){
+						double x = vecList.get(i).getArray()[i];
+						double y = vecList.get(j).getArray()[i];
+						
+						if(x!=0  && y !=0){
+							scalar = -1 * (y / x);
+							vecList.get(j).add(vecList.get(i).scale(scalar));
+						}
+					//System.out.println("x " + x + " y " + y);
 
+					}
+				}
+			}
+		 
+			for(int i = 0; i<vecList.size(); i++){
+				for(int j = 0; j<vecList.size(); j++)
+					if(i == j){
+						z = z * vecList.get(i).getArray()[j];
+						//System.out.println(z);
+					}
+
+			}
+			
+			return z;
+		 }
+		 return 0;
+	}
+	
     public Matrix inverse() {
 
         if(this.getDimension() == this.getRow()) {
@@ -172,9 +218,9 @@ public class Matrix {
         List<Vector> vecList = new ArrayList<>();
         int dimension = 3;
 
-        double[] arr1 = {1, 1, 0};
-        double[] arr2 = {2,1,0};
-        double[] arr3 = {-2, 1, 1};
+        double[] arr1 = {1, 1, 0, 5};
+        double[] arr2 = {2,1,0, 6};
+        double[] arr3 = {-2, 1, 1, 7};
         double[] arr4 = {6, 5, 15, 18};
         //double[] arr5 = {4, 15, 6, 21, 26};
 
@@ -188,14 +234,15 @@ public class Matrix {
         vecList.add(vector1);
         vecList.add(vector2);
         vecList.add(vector3);
-        //vecList.add(vector4);
+        vecList.add(vector4);
        // vecList.add(vector5 );
 
         Matrix n = new Matrix(vecList, dimension);
-        Matrix temp = n.inverse();
-        if(temp == null)
-            System.out.println("NULL");
-
-        Vector.print_matrix(temp.getVectors());
+		System.out.println(n.det() + "");
+        //Matrix temp = n.inverse();
+        //if(temp == null)
+        //    System.out.println("NULL");
+        //
+        //Vector.print_matrix(temp.getVectors());
     }
 }

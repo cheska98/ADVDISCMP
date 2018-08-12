@@ -3,3 +3,4 @@
 .idea/workspace.xml
 out/production/ADVDISCMP/Matrix.class
 out/production/ADVDISCMP/Vector.class
+*.class
