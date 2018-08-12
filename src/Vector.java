@@ -50,6 +50,14 @@ public class Vector {
 
         return this;
     }
+    public Vector divide(double div) {
+        if(div != 0) {
+            for (int i = 0; i < this.getArray().length; i++)
+                array[i] = array[i] /div;
+        }
+
+        return this;
+    }
 
     public Vector unscale(double scalar) {
         for (int i = 0; i < this.getArray().length; i++)
