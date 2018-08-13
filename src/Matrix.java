@@ -130,22 +130,22 @@ public class Matrix {
 	
 	public double det(){
 		double z = 1;
+		double scale = 1;
 		 if(this.getDimension() == this.getRow()) {
             Matrix matrix = new Matrix(this.getDimension());
-            List<Vector> vecList = combine(this);
+           // List<Vector> vecList = combine(this);
+             List<Vector> vecList = this.getVectors();
             double scalar = 0;
 			for(int i = 0; i<vecList.size(); i++){
-				Vector.Arrange(vecList, i);
+                for (int k = i; k < vecList.size() - 1; k++) {
+                    if( vectors.get(k).getArray()[i] < vectors.get(k+1).getArray()[i]) {
+                        double[] temp = vectors.get(k+1).getArray();
+                        vectors.get(k+1).setArray(vectors.get(k).getArray());
+                        vectors.get(k).setArray(temp);
+                        z = -1*z;
+                    }
+                }
 				for(int j = i; j<vecList.size(); j++){
-					//for(int k = 0; k<vecList.size(); k++){
-					//	
-					//	for(int l = 0; l<vecList.size(); l++){
-					//		System.out.print(vecList.get(k).getArray()[l]+" ");
-					//	}
-					//	System.out.println();
-					//}
-					//System.out.println();
-					
 					if(i != j){
 						double x = vecList.get(i).getArray()[i];
 						double y = vecList.get(j).getArray()[i];
@@ -153,13 +153,14 @@ public class Matrix {
 						if(x!=0  && y !=0){
 							scalar = -1 * (y / x);
 							vecList.get(j).add(vecList.get(i).scale(scalar));
+							scale = scale*scalar;
 						}
 					//System.out.println("x " + x + " y " + y);
 
 					}
 				}
 			}
-		 
+
 			for(int i = 0; i<vecList.size(); i++){
 				for(int j = 0; j<vecList.size(); j++)
 					if(i == j){
@@ -168,7 +169,7 @@ public class Matrix {
 					}
 
 			}
-			
+            z = z/scale;
 			return z;
 		 }
 		 return 0;
@@ -176,7 +177,7 @@ public class Matrix {
 	
     public Matrix inverse() {
 
-        if(this.getDimension() == this.getRow()) {
+        if(this.getDimension() == this.getRow() && this.det() > 0) {
             Matrix matrix = new Matrix(this.getDimension());
             List<Vector> vecList = combine(this);
             double scalar = 0;
@@ -218,24 +219,24 @@ public class Matrix {
         List<Vector> vecList = new ArrayList<>();
         int dimension = 3;
 
-        double[] arr1 = {1, 1, 0, 5};
-        double[] arr2 = {2,1,0, 6};
-        double[] arr3 = {-2, 1, 1, 7};
-        double[] arr4 = {6, 5, 15, 18};
-        //double[] arr5 = {4, 15, 6, 21, 26};
+        double[] arr1 = {0,1,1,2,3};
+        double[] arr2 = {1,0,-1,2,1};
+        double[] arr3 = {0,3,1,1,1};
+        double[] arr4 = {-2,1,1,0,1};
+        double[] arr5 = {1,1,1,1,2};
 
 
         Vector vector1 = new Vector(dimension, arr1);
         Vector vector2 = new Vector(dimension, arr2);
         Vector vector3 = new Vector(dimension, arr3);
         Vector vector4 = new Vector(dimension, arr4);
-        //Vector vector5 = new Vector(dimension, arr5);
+        Vector vector5 = new Vector(dimension, arr5);
 
         vecList.add(vector1);
         vecList.add(vector2);
         vecList.add(vector3);
         vecList.add(vector4);
-       // vecList.add(vector5 );
+        vecList.add(vector5 );
 
         Matrix n = new Matrix(vecList, dimension);
 		System.out.println(n.det() + "");

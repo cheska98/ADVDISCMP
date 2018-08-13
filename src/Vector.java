@@ -140,12 +140,15 @@ public class Vector {
 
     public static void Arrange(List<Vector> vectors, int j) {
         int size = vectors.size();
-            for (int k = j; k < size - 1; k++)
-                if( vectors.get(k).getArray()[j] < vectors.get(k+1).getArray()[j] && vectors.get(k).getArray()[j] > 0 ) {
+
+            for (int k = j; k < size - 1; k++) {
+                if( vectors.get(k).getArray()[j] < vectors.get(k+1).getArray()[j]) {
                     double[] temp = vectors.get(k+1).getArray();
                     vectors.get(k+1).setArray(vectors.get(k).getArray());
                     vectors.get(k).setArray(temp);
                 }
+            }
+
     }
 
 
