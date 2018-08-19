@@ -1,3 +1,9 @@
+/*
+    S17 ADVDISC
+    ALEJANDRINO, CHESKA
+    ORTIZ, PAMELA
+    RESPICIO, MICHAEL
+*/
 import java.util.ArrayList;
 import java.util.List;
 public class Matrix {
@@ -135,16 +141,15 @@ public class Matrix {
 	
 	public double det(){
 		double z = 1;
-		double scale = 1;
+        double scale = 1;
         Matrix matrix = new Matrix(this.getDimension());
         matrix.setVectors(this.getVectors());
-
 		 if(this.getDimension() == this.getRow()) {
              List<Vector> vecList = matrix.getVectors();
             double scalar = 0;
 			for(int i = 0; i < vecList.size(); i++){
                 for (int k = i; k < vecList.size() - 1; k++) {
-                    if( vecList.get(k).getArray()[i] < vecList.get(k+1).getArray()[i]) {
+                   if( vecList.get(k).getArray()[i] < vecList.get(k+1).getArray()[i]  && vecList.get(k).getArray()[i] == 0) {
                         double[] temp = vecList.get(k+1).getArray();
                         vecList.get(k+1).setArray(vecList.get(k).getArray());
                         vecList.get(k).setArray(temp);
@@ -176,10 +181,8 @@ public class Matrix {
 
 			}
             z = z/scale;
-
-			return z;
+			return Math.round(z);
 		 }
-
 
 		 return 0;
 	}
@@ -188,7 +191,6 @@ public class Matrix {
         Matrix determinant = new Matrix(this.getDimension());
         determinant.setVectors(this.getVectors());
         if(this.getDimension() == this.getRow()&& determinant.det() != 0) {
-
             Matrix matrix = new Matrix(this.getDimension());
             List<Vector> vecList = combine(this);
             double scalar = 0;
@@ -209,13 +211,10 @@ public class Matrix {
 
                 for(int j = 0; j < matrix.getDimension(); j++)
                     if(vecList.get(j).getArray()[j] != 1)
-                        if(vecList.get(j).getArray()[j] == 0)
-                            return null;
-                        else
-                            vecList.get(j).divide(vecList.get(j).getArray()[j]);
+                        vecList.get(j).divide(vecList.get(j).getArray()[j]);
 
             }
-
+            Vector.print_matrix(vecList);
             List<Vector> vec = extract(vecList, matrix.getDimension());
             matrix.setVectors(vec);
             matrix.setDimension(vec.get(0).getArray().length);
@@ -228,26 +227,27 @@ public class Matrix {
     public static void main(String[] args) {
 
         List<Vector> vecList = new ArrayList<>();
-        int dimension = 2;
+        int dimension = 3;
 
-        double[] arr1 = {1,3};
-        double[] arr2 = {1,2};
-        double[] arr3 = {0,3,1,1,1};
-        double[] arr4 = {-2,1,1,0,1};
-        double[] arr5 = {1,1,1,1,2};
+        double[] arr1 = {-3,0,1};
+        double[] arr2 = {0,1,0};
+        double[] arr3 = {1,2,3};
 
+//        double[] arr1 = {4,2};
+//        double[] arr2 = {7,6};
+
+       /* double[] arr1 = {6,4,2};
+        double[] arr2 = {1,-2,8};
+        double[] arr3 = {1,5,7};*/
 
         Vector vector1 = new Vector(dimension, arr1);
         Vector vector2 = new Vector(dimension, arr2);
         Vector vector3 = new Vector(dimension, arr3);
-        Vector vector4 = new Vector(dimension, arr4);
-        Vector vector5 = new Vector(dimension, arr5);
+
 
         vecList.add(vector1);
         vecList.add(vector2);
-        //vecList.add(vector3);
-        //vecList.add(vector4);
-        //vecList.add(vector5 );
+        vecList.add(vector3);
 
         Matrix n = new Matrix(vecList, dimension);
 		System.out.println(n.det() + "");
@@ -255,10 +255,7 @@ public class Matrix {
         if(temp == null)
           System.out.println("NULL");
         else Vector.print_matrix(temp.getVectors());
-        Matrix sx = n.times(n);
-        if(sx == null)
-            System.out.println("NULL");
-        else Vector.print_matrix(sx.getVectors());
+
 
     }
 }

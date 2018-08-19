@@ -1,9 +1,9 @@
 /*
-    ADVDISC S18
-    ALEJANDRINO, Cheska
-    RESPICIO, Michael
-    ORTIZ, Pamela
- */
+    S17 ADVDISC
+    ALEJANDRINO, CHESKA
+    ORTIZ, PAMELA
+    RESPICIO, MICHAEL
+*/
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -142,7 +142,7 @@ public class Vector {
         int size = vectors.size();
 
             for (int k = j; k < size - 1; k++) {
-                if( vectors.get(k).getArray()[j] < vectors.get(k+1).getArray()[j]) {
+                if( vectors.get(k).getArray()[j] < vectors.get(k+1).getArray()[j] && vectors.get(k).getArray()[j] == 0 ) {
                     double[] temp = vectors.get(k+1).getArray();
                     vectors.get(k+1).setArray(vectors.get(k).getArray());
                     vectors.get(k).setArray(temp);
