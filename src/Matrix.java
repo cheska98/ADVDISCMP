@@ -224,14 +224,34 @@ public class Matrix {
        else
            return null;
     }
+	
+	public Matrix transpose(){
+		
+		List<Vector> newVectorList = new ArrayList<>();
+		
+		for(int i = 0 ; i<getDimension(); i++){
+			newVectorList.add(new Vector(getVectors().size()));
+		}
+		
+		for(int j=0; j<getVectors().size(); j++){
+			for(int k = 0; k<getVectors().get(j).getArray().length; k++){
+				newVectorList.get(k).getArray()[j] = this.getVectors().get(j).getArray()[k];
+			}
+		}
+		
+		Matrix matrix = new Matrix(newVectorList, getRow(), getDimension());
+		return matrix;
+	} 
+	
     public static void main(String[] args) {
 
         List<Vector> vecList = new ArrayList<>();
         int dimension = 3;
 
-        double[] arr1 = {-3,0,1};
-        double[] arr2 = {0,1,0};
-        double[] arr3 = {1,2,3};
+        double[] arr1 = {1,2,3};
+        double[] arr2 = {4,5,6};
+        double[] arr3 = {7,8, -9};
+        double[] arr4 = {9,0, -10};
 
 //        double[] arr1 = {4,2};
 //        double[] arr2 = {7,6};
@@ -243,19 +263,26 @@ public class Matrix {
         Vector vector1 = new Vector(dimension, arr1);
         Vector vector2 = new Vector(dimension, arr2);
         Vector vector3 = new Vector(dimension, arr3);
+        Vector vector4 = new Vector(dimension, arr4);
 
 
         vecList.add(vector1);
         vecList.add(vector2);
         vecList.add(vector3);
+        vecList.add(vector4);
+		System.out.println("FOR N");
 
         Matrix n = new Matrix(vecList, dimension);
-		System.out.println(n.det() + "");
-        Matrix temp = n.inverse();
-        if(temp == null)
-          System.out.println("NULL");
-        else Vector.print_matrix(temp.getVectors());
+		Vector.print_matrix(n.getVectors());
+		System.out.println(n.getRow() + "");
+        Matrix temp = n.transpose();
+        //if(temp == null)
+        //  System.out.println("NULL");
+        //else Vector.print_matrix(temp.getVectors());
+		System.out.println("FOR TEMP");
 
+		Vector.print_matrix(temp.getVectors());
+		
 
     }
 }
